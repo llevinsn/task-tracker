@@ -17,9 +17,9 @@ async function getTasks() {
   return readAll();
 }
 
-async function addTask(title) {
+async function addTask(title, priority = 'normal') {
   const tasks = await readAll();
-  const task = { id: crypto.randomUUID(), title, done: false };
+  const task = { id: crypto.randomUUID(), title, done: false, priority };
   tasks.push(task);
   await writeAll(tasks);
   return task;

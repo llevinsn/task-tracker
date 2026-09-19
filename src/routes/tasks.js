@@ -2,6 +2,7 @@ const express = require('express');
 const store = require('../store');
 
 const router = express.Router();
+const PRIORITIES = ['low', 'normal', 'high'];
 
 router.get('/', async (req, res) => {
   const tasks = await store.getTasks();
@@ -9,19 +10,26 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { title } = req.body;
+  const { title, priority } = req.body;
   if (!title || typeof title !== 'string') {
     return res.status(400).json({ error: 'title is required' });
   }
-  const task = await store.addTask(title);
+  if (priority !== undefined && !PRIORITIES.includes(priority)) {
+    return res.status(400).json({ error: `priority must be one of ${PRIORITIES.join(', ')}` });
+  }
+  const task = await store.addTask(title, priority);
   res.status(201).json(task);
 });
 
 router.patch('/:id', async (req, res) => {
-  const { title, done } = req.body;
+  const { title, done, priority } = req.body;
+  if (priority !== undefined && !PRIORITIES.includes(priority)) {
+    return res.status(400).json({ error: `priority must be one of ${PRIORITIES.join(', ')}` });
+  }
   const changes = {};
   if (title !== undefined) changes.title = title;
   if (done !== undefined) changes.done = done;
+  if (priority !== undefined) changes.priority = priority;
 
   const task = await store.updateTask(req.params.id, changes);
   if (!task) return res.status(404).json({ error: 'task not found' });

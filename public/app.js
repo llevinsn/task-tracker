@@ -1,5 +1,6 @@
 const form = document.getElementById('task-form');
 const input = document.getElementById('task-input');
+const prioritySelect = document.getElementById('task-priority');
 const list = document.getElementById('task-list');
 
 async function fetchTasks() {
@@ -19,6 +20,10 @@ function renderTasks(tasks) {
     checkbox.checked = task.done;
     checkbox.addEventListener('change', () => toggleTask(task.id, checkbox.checked));
 
+    const priority = document.createElement('span');
+    priority.className = 'priority priority-' + (task.priority || 'normal');
+    priority.textContent = task.priority || 'normal';
+
     const span = document.createElement('span');
     span.textContent = task.title;
 
@@ -26,16 +31,16 @@ function renderTasks(tasks) {
     deleteBtn.textContent = 'Eliminar';
     deleteBtn.addEventListener('click', () => deleteTask(task.id));
 
-    li.append(checkbox, span, deleteBtn);
+    li.append(checkbox, span, priority, deleteBtn);
     list.appendChild(li);
   }
 }
 
-async function addTask(title) {
+async function addTask(title, priority) {
   await fetch('/api/tasks', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title }),
+    body: JSON.stringify({ title, priority }),
   });
   await fetchTasks();
 }
@@ -58,8 +63,9 @@ form.addEventListener('submit', (e) => {
   e.preventDefault();
   const title = input.value.trim();
   if (!title) return;
+  const priority = prioritySelect.value;
   input.value = '';
-  addTask(title);
+  addTask(title, priority);
 });
 
 fetchTasks();

@@ -2,7 +2,7 @@
   {
     "id": "1",
     "title": "Aprender el modo de planificación",
-    "done": true
+    "done": false
   },
   {
     "id": "2",
@@ -13,5 +13,16 @@
     "id": "3",
     "title": "Probar el menú de rebobinado",
     "done": false
+  },
+  {
+    "id": "515ded36-5daf-4279-b38e-e68bfe373f03",
+    "title": "Probar el menú de rebobinado en vivo",
+    "done": false
+  },
+  {
+    "id": "941ecbca-6e8e-4c3b-bbe7-254456008287",
+    "title": "Probar prioridades",
+    "done": false,
+    "priority": "high"
   }
 ]
