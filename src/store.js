@@ -13,8 +13,10 @@ async function writeAll(tasks) {
   await fs.writeFile(DATA_FILE, JSON.stringify(tasks, null, 2));
 }
 
-async function getTasks() {
-  return readAll();
+async function getTasks(filter = {}) {
+  const tasks = await readAll();
+  if (filter.done === undefined) return tasks;
+  return tasks.filter((t) => t.done === filter.done);
 }
 
 async function addTask(title, priority = 'normal') {
@@ -42,4 +44,9 @@ async function deleteTask(id) {
   return deleted;
 }
 
-module.exports = { getTasks, addTask, updateTask, deleteTask };
+async function countPending() {
+  const tasks = await readAll();
+  return tasks.filter((t) => !t.done).length;
+}
+
+module.exports = { getTasks, addTask, updateTask, deleteTask, countPending };

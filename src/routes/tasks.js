@@ -4,8 +4,21 @@ const store = require('../store');
 const router = express.Router();
 const PRIORITIES = ['low', 'normal', 'high'];
 
+router.get('/pending/count', async (req, res) => {
+  const count = await store.countPending();
+  res.json({ count });
+});
+
 router.get('/', async (req, res) => {
-  const tasks = await store.getTasks();
+  const { done } = req.query;
+  const filter = {};
+  if (done !== undefined) {
+    if (done !== 'true' && done !== 'false') {
+      return res.status(400).json({ error: 'done must be true or false' });
+    }
+    filter.done = done === 'true';
+  }
+  const tasks = await store.getTasks(filter);
   res.json(tasks);
 });
 
